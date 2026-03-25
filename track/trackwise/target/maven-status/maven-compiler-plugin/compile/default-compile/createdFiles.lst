@@ -1,0 +1,11 @@
+com\trackwise\model\Category.class
+com\trackwise\model\Expense.class
+com\trackwise\repository\CategoryRepository.class
+com\trackwise\repository\UserRepository.class
+com\trackwise\service\ExpenseService.class
+com\trackwise\controller\UserController.class
+com\trackwise\repository\ExpenseRepository.class
+com\trackwise\controller\ExpenseController.class
+com\trackwise\TrackwiseApplication.class
+com\trackwise\model\User.class
+com\trackwise\service\UserService.class
