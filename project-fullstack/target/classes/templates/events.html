@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Events - Smart Campus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .search-bar { display: flex; gap: 1rem; margin-bottom: 2rem; max-width: 600px;}
+        .search-bar input { flex: 1; }
+    </style>
+</head>
+<body>
+    <nav class="navbar glass" style="margin: 2rem;">
+        <a th:href="@{/dashboard}" class="nav-brand">Smart Campus</a>
+        <div class="nav-links">
+            <a th:href="@{/dashboard}" class="nav-link">Dashboard</a>
+            <a th:href="@{/profile}" class="nav-link">Profile</a>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button type="submit" style="background:none; border:none; color:var(--text-primary); cursor:pointer; font-weight:500;">Logout</button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+            <h2>Upcoming Events</h2>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/events/new}" class="btn" style="width:auto;">Add Event</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <form th:action="@{/events}" method="get" class="search-bar">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by department or event type...">
+            <button type="submit" class="btn" style="width: auto;">Search</button>
+            <a th:href="@{/events}" class="btn" style="width: auto; background: var(--text-secondary);" th:if="${keyword}">Clear</a>
+        </form>
+
+        <div th:if="${events.empty}">
+            <p>No events found.</p>
+        </div>
+
+        <div class="grid">
+            <div class="card glass" th:each="event : ${events}">
+                <h3 th:text="${event.title}">Event Title</h3>
+                <span class="badge" th:text="${event.department}">Department</span>
+                <span class="badge" th:text="${event.eventType}">Type</span>
+                
+                <p style="margin-top: 1rem;" th:text="${event.description}">Description</p>
+                <div style="margin-top: 1rem;">
+                    <p><strong>Date:</strong> <span th:text="${event.date}"></span></p>
+                    <p><strong>Time:</strong> <span th:text="${event.time}"></span></p>
+                    <p><strong>Location:</strong> <span th:text="${event.location}"></span></p>
+                    <p><strong>Participation:</strong> <span th:text="${event.participationType}"></span></p>
+                    <p><strong>Fee:</strong> <span th:text="${event.feeAmount != null and event.feeAmount > 0 ? '$' + event.feeAmount : 'Free'}"></span></p>
+                    <p th:if="${event.totalOpenings != null}">
+                        <strong>Remaining Spots:</strong> 
+                        <span th:text="${event.remainingOpenings}" 
+                              th:style="${event.remainingOpenings <= 5 ? 'color: var(--danger-color); font-weight: bold;' : 'color: var(--success-color);'}">
+                        </span>
+                        / <span th:text="${event.totalOpenings}"></span>
+                    </p>
+                </div>
+                
+                <div class="card-footer">
+                    <div sec:authorize="hasRole('STUDENT')">
+                        <a th:href="@{/events/register/{id}(id=${event.id})}" class="btn" style="width:auto; padding:0.5rem 1rem;">Register</a>
+                    </div>
+                    
+                    <div sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/admin/events/edit/{id}(id=${event.id})}" class="btn" style="width:auto; padding:0.5rem 1rem;">Edit</a>
+                        <a th:href="@{/admin/events/delete/{id}(id=${event.id})}" class="btn btn-danger" style="width:auto; padding:0.5rem 1rem;" onclick="return confirm('Are you sure?')">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

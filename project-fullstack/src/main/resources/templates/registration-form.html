@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Registration - Smart Campus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script>
+        function toggleTeamFields() {
+            var teamFields = document.getElementById("teamFields");
+            var participationType = document.getElementById("participationType").value;
+            if (participationType === "Team") {
+                teamFields.style.display = "block";
+            } else {
+                teamFields.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <nav class="navbar glass" style="margin: 2rem;">
+        <a th:href="@{/dashboard}" class="nav-brand">Smart Campus</a>
+        <div class="nav-links">
+            <a th:href="@{/events}" class="nav-link">Upcoming Events</a>
+            <a th:href="@{/profile}" class="nav-link">Profile</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="form-container glass" style="max-width: 600px;">
+            <h2 th:text="'Register for ' + ${event.title}">Register for Event</h2>
+            
+            <form th:action="@{/events/register/{id}(id=${event.id})}" th:object="${registration}" method="post">
+                <div class="form-group">
+                    <label>Student Name</label>
+                    <input type="text" th:field="*{studentName}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>College Name</label>
+                    <input type="text" th:field="*{college}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    <input type="text" th:field="*{department}" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Participation Type</label>
+                    <select id="participationType" onchange="toggleTeamFields()" required>
+                        <option value="Individual" th:selected="${event.participationType != 'Team'}">Individual</option>
+                        <option value="Team" th:selected="${event.participationType == 'Team'}">Team</option>
+                    </select>
+                </div>
+                
+                <div id="teamFields" style="display:none; padding:1rem; border:1px solid var(--border-color); border-radius:8px; margin-bottom:1.5rem;">
+                    <div class="form-group">
+                        <label>Team Name</label>
+                        <input type="text" th:field="*{teamName}">
+                    </div>
+                    <div class="form-group">
+                        <label>Team Size</label>
+                        <input type="number" th:field="*{teamSize}" min="1" value="1">
+                    </div>
+                </div>
+
+                <div class="form-group" th:if="${event.feeAmount != null and event.feeAmount > 0}">
+                    <label>Payment Section (Fee: $<span th:text="${event.feeAmount}"></span>)</label>
+                    <select th:field="*{paymentStatus}" required>
+                        <option value="Completed">Pay Now (Simulated via Gateway)</option>
+                        <option value="Pending">Pay Later / At Venue</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; gap:1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn">Confirm Registration</button>
+                    <a th:href="@{/events}" class="btn" style="background:var(--text-secondary);">Cancel</a>
+                </div>
+            </form>
+            <script>
+                // Call on load to correctly show/hide based on default selection
+                toggleTeamFields();
+            </script>
+        </div>
+    </div>
+</body>
+</html>
