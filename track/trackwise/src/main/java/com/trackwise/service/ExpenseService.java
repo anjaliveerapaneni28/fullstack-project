@@ -19,10 +19,24 @@ public class ExpenseService {
         return expenseRepository.findAll();
     }
 
+    public List<Expense> getExpensesByUserId(Long userId){
+        return expenseRepository.findByUserId(userId);
+    }
+
 
     /* Save expense */
     public void saveExpense(Expense expense){
         expenseRepository.save(expense);
+    }
+
+    /* Get expense by ID */
+    public Expense getExpenseById(Long id) {
+        return expenseRepository.findById(id).orElse(null);
+    }
+
+    /* Delete expense */
+    public void deleteExpense(Long id) {
+        expenseRepository.deleteById(id);
     }
 
 }

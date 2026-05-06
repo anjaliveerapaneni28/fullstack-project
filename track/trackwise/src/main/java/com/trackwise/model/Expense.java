@@ -17,8 +17,11 @@ public class Expense {
     private LocalDate date;
 
     @ManyToOne
-   
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     public Expense(){}
 
@@ -36,4 +39,7 @@ public class Expense {
 
     public Category getCategory(){ return category; }
     public void setCategory(Category category){ this.category=category; }
+
+    public User getUser(){ return user; }
+    public void setUser(User user){ this.user=user; }
 }
